@@ -1,0 +1,290 @@
+Purpose - It's about some interesting observations/results acquired by experimenting with my code
+Source/Alternate Link - https://agtech15.blogspot.com
+                        *It's a blog owned by me, and has all these on different pages
+
+Programmer - Aditya Gupta (Techy15)
+
+=========================================
+	FUNCTIONS (26 July 2019)
+=========================================
+1. To define a function outside the class, there MUST be a prototype inside the class.
+For eg.
+class Jg{
+ int num;
+ public:
+  Jg(){ num=0; }
+};
+void Jg::Display() //Error will be here
+{ cout<<num;
+}
+//This Program will give the error "no 'void Jg::Display()' member function declared in class 'Jg'"
+
+2. What if one member function defined twice, once inside class and once outside?
+Will give error "[error]redefintion of int Jg::Display()"
+And then pointing on the first defintion it will give "[NOTE] int Jg::Display() previously defined here"
+PROGRAM - #include<iostream>
+using namespace std;
+class Jg{
+ int num;
+ public:
+  Jg(){
+   num=0;
+  }
+  Display(){
+   cout<<"Hello";
+  }
+};
+int Jg::Display(){ //ERROR
+ cout<<num;
+}
+main(){
+ Jg J1;
+ J1.Display();
+}
+
+3. What if a member function declared twice inside the class?
+Will show error "int Ag::Display() cannot be overloaded"
+Program- #include<iostream>
+using namespace std;
+class Ag{
+ int num;
+ public:
+  Ag(){
+   num=0;
+  }
+  Display(){
+   cout<<"Hello";
+  }
+  int Display(){ //ERROR
+ cout<<num;
+}
+};
+
+main(){
+ Ag A1;
+ A1.Display();
+}
+
+4. What if member function defined once above the main() function, and the other below the main() function?
+Will give error "redefintion of int Ag::Display()"
+PROGRAM - #include<iostream>
+using namespace std;
+class Ag{
+ int num;
+ public:
+  Ag(){
+   num=0;
+  }
+  Display();
+};
+int Ag::Display(){
+ cout<<"Hello"; }
+ 
+main(){
+ Ag J1;
+ J1.Display();
+}
+int Ag::Display(){
+ cout<<num; }
+
+5. What if no main() function?
+Dev C++ shows the error "undefined reference to WinMain@16"
+and also "ld returned 1 exit status"
+
+6. What if i dont give the return type for a member function? (like we dont give return type for constructor)
+It will automatically have 'int' return type
+For eg. class Jg{
+ int num;
+ public:
+  Jg(){ num=0; }
+  Display(); //return type not provided
+};
+int Jg::Display() //NO ERROR
+{ cout<<num;
+}
+
+7. What if return type not provided for a global function?
+Ans. Default is 'int' return type
+
+8. What if we write just 'main()' instead of 'int main()' or 'void main()'?
+Ans. Everything's still fine, default return type in modern compilers is 'int'
+
+9. What if return statement (ie. return 1; etc) not provided in main()?
+Ans.Default return value is 0
+But in case any error occurs the return code for that error will be printed (this will happen even if you have given a return statement!)
+
+10. Can we just write the defintion of a funtion without the {} brackets ?
+Ans. No [applies to main() funtion as well as all others] . See this for example,
+Program 1: #include<iostream>
+  say()
+  std::cout<<"Hello";
+  main(){ say(); }
+Program 1 will give the errors-
+[Error] expected constructor, destructor, or type conversion before 'std' (line 3)
+[Error] 'pri' was not declared in this scope (at line 4)
+
+NOTE- As most of you may already know, that the same can be done in loops, for eg while(1) cout<<"Hello";
+
+11. Are spaces allowed in #include directive?
+No,
+#include< iostream > //will not find <iostream> //From Bjarne Stroustrup's Book (4th Book)
+
+//I used Dev C++ Ver 5.11 (IDE) for these...wrote it since there may be difference in other IDEs
+
+
+==========================================
+		Strings	(26 July 2019)
+==========================================
+
+1. strlen() FUNCTION OF string.h
+It stops counting where it finds uninitialised character (ie if Arr[i] is uninitialised, it gives length as i)
+for eg. char S[10];
+ S[0]='c';
+ cout<<strlen(S); //This prints '1'
+for eg. char S[10];
+ S[4]='c';
+ cout<<strlen(S); //This prints '0', even though there is one character
+
+NOTE- Though such case may not be ever encountered in actual use but i just found this out experimenting with the code
+
+Reason- See the function definition of strlen() in string (or string.h on older ones) header file
+
+2. THE NULL CHARACTER
+The null character (that terminates strings, ie '\0') has the integer code '0'.
+(i. cout<<int('\0'); gives 0)
+'\n' has code 10
+' ' has code 32
+txt files terminate with a character with code '-1', but when i tried to print the respective character using cout<<char(-1); it just printed a space!?
+
+//I used Dev C++ Ver 5.11 (compiler)
+
+
+==========================================
+Mathematical Problem with MODULUS OPERATOR
+==========================================
+When negative number is divided by its positive counterpart will give remainder 0;
+for eg. cout<<(-5)%(5); //will print 0
+
+BUT, a problem is that it may return negative remainders also, which is mathematically wrong
+for eg. cout<(-5)%2; //will print -1
+//actually it should have given remainder 1 not -1
+
+NOTE....
+
+C++ with its math.h (or cmath) provides a function called "remainder(x,y)", it corrects this problem as well as it is more advance since it can also give floating point remainders... You may use that IF you think such case/need can be encountered
+remainder() requires two arguments () of any arithmetic type
+
+
+
+========================================
+		MORE
+========================================
+
+I used g++ to compile these on linux
+
+1. Type casting of floating point numeral to integer (either automatic or by type casting)-
+Conversion of floating point to integer is by taking the GIF (Greatest Integer Funtion) and NOT ROUNDING OFF
+
+Greatest Integer Function(Maths,12th) it gives the integer part when the original number is written as integer+fractional part (where fractional part is less than 1 but positive)
+
+2. NEsted MultiLine Comment [actually wont work as expected?!]
+  if you do this in C++....
+  /*  blah /*blah blah blah*/ blah*/
+  the last blah will be visible to the compiler!!! (Inference- Multiline-Comment ends whenever */ is encountered, no matter where!!)NEsted MultiLine Comment
+
+3. Size of various types (of C++) on 'Linux' Mint - (and same as in later versions of windows, and most PCs nowadays)
+ char - 1
+ int - 4  (and: short - 2, unsigned long - 8)
+ long long - 8
+ float - 4
+ double - 8 (and: long double - 16)
+
+NOTE- All sizes in bytes
+
+4. The Control Characters (for eg. newline and tab) require a BACKSLASH
+   *Seems obvious, but in cases where i dont do programming for some time, i get confused in the slash to be used... though i get it from the different colour in vim editor
+
+5. Conversion of int* to char shows the error 'conversion of int* to char loses precision'
+   While conversion of int* to char* is OK.
+
+6. Entering Out Of Range value in a declared variable...
+   In such a case, the variable will hold the maximum value it can hold, for example an int when given a very long number, it stores 2147483647 (ie. (2^31)-1).
+
+7. Maximum value of unsigned variable = maximum value of signed variable
+   The thing I got surprised at was that, it stored the same number in both cases, let it be signed or unsigned! (size of int on my system is 4 bytes(32 bits) as on most)
+
+//THINGS About ARRAYS
+8. We cannot copy an array into another array of same type and same size by just simple assignment.
+ for eg. A=B; //where B is initialised, and both are in arrays of size 3
+It shows 'error: invalid array assignment'
+
+9. We can use initializer list to give values to elements of array, only when it is declared, after that we can't use it, it will show an error then...
+ for eg. int A[3]={34,5,4}; //is OK
+ BUT,    int A[3];
+  A={34,5,4};
+ The second one shows 'error: invalid array assignment'
+//XX XX XX//
+10. I have posted this observation in another post also, ie. "Default return type of any function is int, nowadays atleast... and that main() be default returns 0, if return statement not typed"
+    But, I still expected it to be raised as a 'Warning' by the compiler
+    So... nor gcc nor g++ raises even any warning about missing return statement.
+
+11. Entering Characters and MIXED data types when asked for an integer...
+ Case 1: Entered a,b,c etc. -> int variable stores 0
+ Case 2: Entered string Hi,Bye,etc -> int variable stores 0
+  //ACTUALLY, It ignores any succeeding character or integer, if first thing entered wasnt a number, but was an integer... So, for it Hi is same as H only!
+ Case 3: Entered 454d : Stores 454
+  //Ignores any other data type, in case first entered was some number, then it will just take any character as end of number (for eg. 'Enter key' is also a character)
+ Case 4: Entered 454d45: Stores 454
+  //Since it took any further character to be end of number (NOTE: In all cases i am saying number ended, actually the input hasnt ended, but i mean it will be treated like that later...)
+ Case 5: Enter f344, fsg45, d454fg, etc (ie. character at start) -> int variable stores 0
+  //Maybe since it just treated b, which will cause its value 0, and since being a character further things weren't even accounted for
+
+12. 'long' and 'long long' have same size, ie. 8 bytes in g++ compiler
+   But, 'double' has 8 bytes, while 'long double' has 16 bytes
+   
+=========================================
+	Random Stuff (24th Jan 2019)
+=========================================
+
+//I used Dev C++ Ver 5.11 (IDE) ... i told since some of this might run differently on other IDEs
+
+Some interesting observations in C++
+----------------------------------------
+1. About pow() function
+*pow() cant find 'fractional' powers, but can find decimal powers
+for eg. pow(4,1/2) gives 1;
+but, pow(4,0.5) gives 2;
+     pow(4,0.55) gives 2.14;
+
+*roots of negative numbers:
+pow(-4,0.5) gives "nan"
+
+2. Time Battle between cout and for loop (UnExpEcTEd)
+In this program, see the time taken by them (individually) "on my computer" (on faster computers there may be more/less gap)
+
+#include<iostream>
+using namespace std;
+int main()
+{
+
+//for(int i=1; i<100000;i++);  //0.215 sec
+cout<<"hello";  //0.303 sec
+}
+
+3. Dont ask user to enter 0, if you are going to use an IF statement, because 0 is treated as false; instead ask for -1 instead of 0 (*you may even as for any other number)
+For eg. cout<<"Enter 0 if you want to exit : "; cin>>choice;
+if(choice==0) exit;
+else goto proceed;
+
+//in this piece of code, even if the user enters 0, the if will become false, and hence will not exit
+//ALTERNATIVE (Not recommended) - you may go like this : "if(choice!=0) exit;" but if the user is asked to enter number choice from a menu, for eg. then the program will exit instead of proceeding :p
+
+4. About the size of array...
+   When you declare an array globally, you will have to give its size also
+   When you declare an array in a function, you will have to give its size also
+   When you declare an array in a CLASS or STRUCT, you are NOT REQUIRED TO GIVE ITS SIZE
+   When you declare an array in a FUNCTION'S PROTOTYPE, you are NOT REQUIRED TO GIVE ITS SIZE
+
+5. C++ is CASE SENSITIVE
+
+6. C++ printed a 100MB file in 6s (with random characters from the heap storage) on a 7 year old laptop, with an intel core i5 (2nd Gen), and 4GB DDR3 RAM
